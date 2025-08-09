@@ -1,0 +1,2 @@
+# govsucks-redirect
+govsucks page
