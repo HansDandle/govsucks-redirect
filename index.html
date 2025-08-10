@@ -128,6 +128,162 @@
 
       <div class="palm" aria-hidden="true"></div>
     </div>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Drumpf & Eepsteen Island</title>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(#87CEEB, #bfe9ff 60%);
+  }
+
+  .scene {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Island */
+  .island {
+    position: absolute;
+    left: 50%;
+    bottom: 5%;
+    transform: translateX(-50%);
+    width: 65%;
+    max-width: 900px;
+    height: 40%;
+    background: radial-gradient(ellipse at center, #e0c37a 0%, #b58e3a 60%);
+    border-radius: 50% 50% 35% 35%;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  }
+
+  /* Palm tree */
+  .palm {
+    position: absolute;
+    left: 10%;
+    bottom: 48%;
+    width: 140px;
+    height: 220px;
+    background: url('palm.png') center/contain no-repeat;
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25));
+  }
+
+  /* Characters as images */
+  .character {
+    position: absolute;
+    bottom: 30%;
+    animation: dance 1s infinite ease-in-out;
+    transform-origin: center bottom;
+    user-select: none;
+  }
+  .char-left {
+    left: 20%;
+  }
+  .char-right {
+    right: 20%;
+  }
+
+  @keyframes dance {
+    0% { transform: translateY(0) rotate(-6deg); }
+    25% { transform: translateY(-12px) rotate(6deg); }
+    50% { transform: translateY(0) rotate(-6deg); }
+    75% { transform: translateY(-6px) rotate(6deg); }
+    100% { transform: translateY(0) rotate(-6deg); }
+  }
+
+  /* Plane + banner wrapper */
+  .flyer {
+    position: absolute;
+    top: 8%;
+    left: -25%;
+    display: flex;
+    align-items: center;
+    animation: fly 8s linear infinite;
+    user-select: none;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Plane image */
+  .plane {
+    width: 220px;
+    height: 80px;
+    background: url('plane.png') center/contain no-repeat;
+    flex-shrink: 0;
+  }
+
+  /* Banner trailing the plane */
+  .banner {
+    margin-left: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+    font-weight: 700;
+    white-space: nowrap;
+    font-size: 18px;
+    color: #222;
+  }
+
+  @keyframes fly {
+    0% { transform: translateX(0) translateY(0); }
+    50% { transform: translateX(130vw) translateY(20vh); }
+    100% { transform: translateX(260vw) translateY(0); }
+  }
+
+  /* Click hint */
+  .hint {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+  <div class="scene" id="scene">
+    <div class="flyer" aria-label="Plane pulling banner">
+      <div class="plane" aria-hidden="true"></div>
+      <div class="banner">The Lolita Express</div>
+    </div>
+
+    <div class="island" role="img" aria-label="Tropical island">
+      <img src="drumpf.png" alt="Drumpf" class="character char-left" />
+      <img src="eepsteen.png" alt="Eepsteen" class="character char-right" />
+      <div class="palm" aria-hidden="true"></div>
+    </div>
+
+    <div class="banner" style="position:absolute; top: 16%; left: 50%; transform: translateX(-50%); font-weight:700; background: rgba(255,255,255,0.9); padding:10px 20px; border-radius:8px; box-shadow:0 6px 14px rgba(0,0,0,0.2); z-index: 5;">
+      Drumpf is a Pedo
+    </div>
+
+    <div class="hint">Click anywhere for sound</div>
+  </div>
+
+  <audio id="fartAudio" src="fart.mp3" preload="auto"></audio>
+
+<script>
+  const scene = document.getElementById('scene');
+  const audio = document.getElementById('fartAudio');
+
+  scene.addEventListener('click', () => {
+    audio.currentTime = 0;
+    audio.play().catch(e => console.log('play blocked', e));
+  });
+</script>
+</body>
+</html>
 
     <div class="hint">Click anywhere for sound</div>
   </div>
