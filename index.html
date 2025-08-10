@@ -5,6 +5,34 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Best Buds</title>
 <style>
+  /* Puff animation */
+  .puff {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    width: 25px; /* fallback */
+    height: auto;
+    z-index: 10;
+    transition: opacity 0.2s;
+    will-change: transform, opacity;
+  }
+  .puff-animate {
+    animation: puffFade 0.8s forwards;
+  }
+  @keyframes puffFade {
+    0% {
+      opacity: 0.8;
+      transform: scale(0.7) translate(0, 0);
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1.1) translate(12px, 18px);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.3) translate(30px, 40px);
+    }
+  }
   /* Water animation */
   .water-bg {
     position: absolute;
@@ -249,7 +277,7 @@
     </div>
 
     <div class="island" role="img" aria-label="Tropical island">
-      <img src="drumpf.png" alt="Drumpf" class="character char-left" />
+  <img src="drumpf.png" alt="Drumpf" class="character char-left" id="charLeft" />
       <img src="eepsteen.png" alt="Eepsteen" class="character char-right" />
       <div class="palm" aria-hidden="true"></div>
     </div>
@@ -278,6 +306,35 @@
       releaseAudio.volume = 0.8;
       releaseAudio.play().catch(e => {/* likely blocked until user gesture */});
       firstClick = false;
+    }
+
+    // Puff animation logic
+    const charLeft = document.getElementById('charLeft');
+    if (charLeft) {
+      // Get character's bounding box relative to .scene
+      const charRect = charLeft.getBoundingClientRect();
+      const sceneRect = scene.getBoundingClientRect();
+      // Puff size: 25% of character width
+      const puffSize = charRect.width * 0.25;
+      // Position: bottom right of character
+      const left = charRect.left - sceneRect.left + charRect.width * 0.75;
+      const top = charRect.top - sceneRect.top + charRect.height * 0.75;
+
+      // Create puff element
+      const puff = document.createElement('img');
+      puff.src = 'puff.png';
+      puff.className = 'puff puff-animate';
+      puff.style.width = puffSize + 'px';
+      puff.style.left = left + 'px';
+      puff.style.top = top + 'px';
+
+      // Add to scene
+      scene.appendChild(puff);
+
+      // Remove after animation
+      puff.addEventListener('animationend', () => {
+        puff.remove();
+      });
     }
   });
 </script>
