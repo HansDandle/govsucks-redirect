@@ -148,6 +148,44 @@
     font-size: 13px;
     user-select: none;
   }
+  @media (max-width: 600px) {
+  /* Scale down characters a bit */
+  .character {
+    animation: dance 1s infinite ease-in-out;
+    bottom: 20%;
+    position: absolute;
+    width: auto;
+    max-width: 100px;  /* smaller max width on mobile */
+    height: auto;
+  }
+
+  /* Instead of left/right, center characters with horizontal spacing */
+  .char-left {
+    left: 25%;
+    bottom: 20%;
+  }
+  .char-right {
+    left: 60%;
+    bottom: 20%;
+  }
+
+  /* Optional: scale island smaller */
+  .island {
+    width: 90%;
+    height: 30%;
+  }
+
+  /* Adjust palm position */
+  .palm {
+    left: 5%;
+    bottom: 40%;
+    width: 100px;
+    height: 160px;
+  }
+}
+
+
+
 </style>
 </head>
 <body>
