@@ -5,136 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Drumpf & Eepsteen Island</title>
 <style>
-  html,body { height:100%; margin:0; font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;}
-  .scene {
-    position:relative;
-    width:100%;
-    height:100vh;
-    overflow:hidden;
-    background: linear-gradient(#87CEEB, #bfe9ff 60%);
-  }
-
-  .island {
-    position:absolute;
-    left:50%;
-    bottom:5%;
-    transform:translateX(-50%);
-    width:65%;
-    max-width:900px;
-    height:40%;
-    background: radial-gradient(ellipse at center, #e0c37a 0%, #b58e3a 60%);
-    border-radius:50% 50% 35% 35%;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
-  }
-
-  .character {
-    position:absolute;
-    bottom: 30%;
-    width:160px;
-    height:160px;
-    background-size:cover;
-    background-position:center;
-    transform-origin:center bottom;
-    animation: dance 1s infinite ease-in-out;
-  }
-  .char-left { left:20%; animation-delay:0s; }
-  .char-right { right:20%; animation-delay:0.15s; }
-
-  @keyframes dance {
-    0% { transform: translateY(0) rotate(-6deg); }
-    25% { transform: translateY(-12px) rotate(6deg); }
-    50% { transform: translateY(0) rotate(-6deg); }
-    75% { transform: translateY(-6px) rotate(6deg); }
-    100% { transform: translateY(0) rotate(-6deg); }
-  }
-
-  .plane {
-    position:absolute;
-    top:8%;
-    left:-25%;
-    width:220px;
-    height:80px;
-    background:url('plane.png') center/contain no-repeat;
-    animation: fly 8s linear infinite;
-    z-index:4;
-  }
-  @keyframes fly {
-    0% { transform: translateX(0) translateY(0) }
-    50% { transform: translateX(130vw) translateY(20vh) }
-    100% { transform: translateX(260vw) translateY(0) }
-  }
-  .plane-label {
-    position:absolute;
-    top: calc(8% + 60px);
-    left:0%;
-    font-weight:700;
-    color:white;
-    background:rgba(0,0,0,0.7);
-    padding:4px 8px;
-    border-radius:4px;
-    font-size:14px;
-    transform: translateX(50px);
-  }
-
-  .banner {
-    position:absolute;
-    top: calc(8% + 40px);
-    left:6%;
-    font-weight:700;
-    background: rgba(255,255,255,0.9);
-    padding:10px 18px;
-    border-radius:8px;
-    box-shadow:0 6px 14px rgba(0,0,0,0.2);
-    z-index:3;
-    white-space:nowrap;
-  }
-
-  .palm {
-    position:absolute;
-    left:10%;
-    bottom:48%;
-    width:342px;
-    height:583px;
-    background:url('palm.png') center/contain no-repeat;
-    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25));
-  }
-
-  .hint {
-    position:absolute;
-    right:14px;
-    bottom:14px;
-    background:rgba(0,0,0,0.5);
-    color:white;
-    padding:8px 10px;
-    border-radius:6px;
-    font-size:13px;
-  }
-</style>
-</head>
-<body>
-  <div class="scene" id="scene">
-    <div class="plane" aria-hidden="true"></div>
-    <div class="plane-label">The Lolita Express</div>
-    <div class="banner">Trump is a Pedo</div>
-
-    <div class="island" role="img" aria-label="Tropical island">
-      <div class="character char-left"
-           src='drumpf.png'
-           aria-hidden="true"></div>
-
-      <div class="character char-right"
-           src='eepsteen.png'
-           aria-hidden="true"></div>
-
-      <div class="palm" aria-hidden="true"></div>
-    </div>
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Drumpf & Eepsteen Island</title>
-<style>
   html, body {
     height: 100%;
     margin: 0;
@@ -197,30 +67,35 @@
     100% { transform: translateY(0) rotate(-6deg); }
   }
 
-  /* Plane + banner wrapper */
-  .flyer {
+  /* Flyer container */
+  .flyer-container {
     position: absolute;
     top: 8%;
     left: -25%;
-    display: flex;
-    align-items: center;
-    animation: fly 8s linear infinite;
-    user-select: none;
+    width: 300vw;
+    height: 100px;
     pointer-events: none;
-    z-index: 10;
+    user-select: none;
   }
 
-  /* Plane image */
+  /* Plane animation */
   .plane {
+    position: absolute;
     width: 220px;
     height: 80px;
     background: url('plane.png') center/contain no-repeat;
-    flex-shrink: 0;
+    animation: fly-plane 16s linear infinite;
+    will-change: transform;
+    top: 0;
+    left: 0;
+    z-index: 2;
   }
 
-  /* Banner trailing the plane */
+  /* Banner animation */
   .banner {
-    margin-left: 12px;
+    position: absolute;
+    top: 30px;
+    left: -200px;
     background: rgba(255, 255, 255, 0.9);
     padding: 10px 20px;
     border-radius: 8px;
@@ -229,12 +104,36 @@
     white-space: nowrap;
     font-size: 18px;
     color: #222;
+    animation: fly-banner 16s linear infinite;
+    animation-delay: 1.5s;
+    will-change: transform;
+    z-index: 1;
   }
 
-  @keyframes fly {
+  @keyframes fly-plane {
     0% { transform: translateX(0) translateY(0); }
     50% { transform: translateX(130vw) translateY(20vh); }
     100% { transform: translateX(260vw) translateY(0); }
+  }
+
+  @keyframes fly-banner {
+    0% { transform: translateX(0) translateY(0); }
+    50% { transform: translateX(130vw) translateY(20vh); }
+    100% { transform: translateX(260vw) translateY(0); }
+  }
+
+  /* Static Drumpf banner on island */
+  .island-banner {
+    position: absolute;
+    top: 16%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 700;
+    background: rgba(255,255,255,0.9);
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+    z-index: 5;
   }
 
   /* Click hint */
@@ -253,7 +152,7 @@
 </head>
 <body>
   <div class="scene" id="scene">
-    <div class="flyer" aria-label="Plane pulling banner">
+    <div class="flyer-container" aria-label="Plane pulling banner">
       <div class="plane" aria-hidden="true"></div>
       <div class="banner">The Lolita Express</div>
     </div>
@@ -264,26 +163,7 @@
       <div class="palm" aria-hidden="true"></div>
     </div>
 
-    <div class="banner" style="position:absolute; top: 16%; left: 50%; transform: translateX(-50%); font-weight:700; background: rgba(255,255,255,0.9); padding:10px 20px; border-radius:8px; box-shadow:0 6px 14px rgba(0,0,0,0.2); z-index: 5;">
-      Drumpf is a Pedo
-    </div>
-
-    <div class="hint">Click anywhere for sound</div>
-  </div>
-
-  <audio id="fartAudio" src="fart.mp3" preload="auto"></audio>
-
-<script>
-  const scene = document.getElementById('scene');
-  const audio = document.getElementById('fartAudio');
-
-  scene.addEventListener('click', () => {
-    audio.currentTime = 0;
-    audio.play().catch(e => console.log('play blocked', e));
-  });
-</script>
-</body>
-</html>
+    <div class="island-banner">Drumpf is a Pedo</div>
 
     <div class="hint">Click anywhere for sound</div>
   </div>
