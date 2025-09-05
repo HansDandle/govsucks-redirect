@@ -1,10 +1,112 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js"></script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Best Buds</title>
 <style>
+  /* Overlay for PDF viewer */
+  .pdf-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 0 0 0;
+  }
+  .pdf-container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    max-width: 90vw;
+    max-height: 80vh;
+    width: 800px;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+  .pdf-search-bar {
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    border-bottom: 1px solid #eee;
+    font-size: 18px;
+    outline: none;
+    background: #f7f7f7;
+  }
+  .pdf-close-btn {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: #222;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    padding: 4px 12px;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .pdf-iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: #fff;
+  }
+  .pdf-search-results {
+    position: absolute;
+    left: 0; right: 0; top: 52px;
+    max-height: 40vh;
+    overflow-y: auto;
+    background: #fff;
+    z-index: 3;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    display: none;
+  }
+  /* Book drop animation */
+  .book {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    left: 0;
+    top: 0;
+    z-index: 20;
+    pointer-events: auto;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  /* Remove old book-animate and bookDrop keyframes, replaced by JS animation */
+  .book-popup {
+    position: absolute;
+  left: 50%;
+  bottom: 8%;
+  transform: translate(-50%, 0);
+    background: #222;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    z-index: 21;
+    opacity: 0;
+    animation: popupFade 1.2s 1.2s forwards;
+    pointer-events: none;
+  }
+  @keyframes popupFade {
+    0% { opacity: 0; }
+    60% { opacity: 0; }
+    100% { opacity: 1; }
+  }
   /* Puff animation */
   .puff {
     position: absolute;
@@ -128,7 +230,9 @@
     user-select: none;
   }
   .char-left {
-    left: 20%;
+  left: 20%;
+  left: 20%;
+  /* original size and style restored */
   }
   .char-right {
     right: 20%;
@@ -238,6 +342,9 @@
   .char-left {
     left: 25%;
     bottom: 20%;
+    max-width: 50px;
+    width: 50px;
+    height: auto;
   }
   .char-right {
     left: 60%;
@@ -272,7 +379,7 @@
       <div class="wave wave3"></div>
     </div>
     <div class="flyer-container" aria-label="Plane pulling banner">
-      <div class="plane" aria-hidden="true"></div>
+  <div class="plane" aria-hidden="true" id="plane"></div>
       <div class="banner">Trump is a pedo</div>
     </div>
 
@@ -284,7 +391,7 @@
 
     <div class="island-banner">Lock him up!</div>
 
-    <div class="hint">Click anywhere for sound</div>
+  <div class="hint" id="muteHint">Click anywhere for sound</div>
   </div>
 
 
@@ -292,9 +399,146 @@
   <audio id="releaseAudio" src="releasethefiles.mp3" preload="auto"></audio>
 
 <script>
+  // Book drop logic
+  let bookDropped = false;
+  function dropBook() {
+    if (bookDropped) return;
+    bookDropped = true;
+    const plane = document.getElementById('plane');
+    const scene = document.getElementById('scene');
+    const island = document.querySelector('.island');
+    if (!plane || !scene || !island) return;
+
+    // Get plane position relative to scene
+    const planeRect = plane.getBoundingClientRect();
+    const sceneRect = scene.getBoundingClientRect();
+    // Start X: center of plane
+    const startX = planeRect.left - sceneRect.left + planeRect.width/2 - 24;
+    const startY = planeRect.top - sceneRect.top + planeRect.height/2 - 24;
+
+    // End X: center of island
+    const islandRect = island.getBoundingClientRect();
+    const endX = islandRect.left - sceneRect.left + islandRect.width/2 - 24;
+    const endY = islandRect.top - sceneRect.top + islandRect.height/2 - 24;
+
+    // Get character size for scaling
+    const charLeft = document.getElementById('charLeft');
+    let bookSize = 48;
+    if (charLeft) {
+      const charRect = charLeft.getBoundingClientRect();
+      bookSize = Math.max(32, charRect.width * 0.33); // 33% of character width, min 32px
+    }
+
+    // Create book element
+    const book = document.createElement('img');
+    book.src = 'book.png';
+    book.className = 'book';
+    book.style.width = bookSize + 'px';
+    book.style.height = 'auto';
+    book.style.left = startX + 'px';
+    book.style.top = startY + 'px';
+    scene.appendChild(book);
+
+    // Animate book drop with JS (falling effect)
+    setTimeout(() => {
+  const duration = 2000; // ms
+      const startTime = performance.now();
+      function animateBook(now) {
+        const elapsed = now - startTime;
+        const t = Math.min(elapsed / duration, 1);
+        // Ease: easeInOutQuad
+        const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+        // Parabolic curve for Y (simulate gravity)
+        const currentX = startX + (endX - startX) * ease;
+        const currentY = startY + (endY - startY) * (t < 0.7 ? t*t/0.7 : 1); // curve, then land
+        book.style.left = currentX + 'px';
+        book.style.top = currentY + 'px';
+        book.style.opacity = '1';
+        if (t < 1) {
+          requestAnimationFrame(animateBook);
+        } else {
+          // After animation, move book into island and keep it there
+          // Get island position relative to scene
+          const islandRect = island.getBoundingClientRect();
+          const sceneRect = scene.getBoundingClientRect();
+          // Center book on island
+          const left = islandRect.left - sceneRect.left + islandRect.width/2 - bookSize/2;
+          const top = islandRect.top - sceneRect.top + islandRect.height/2 - bookSize/2;
+          book.style.left = left + 'px';
+          book.style.top = top + 'px';
+          book.style.opacity = '1';
+        }
+      }
+      requestAnimationFrame(animateBook);
+    }, 50);
+
+    // After animation, move book into island and keep it there
+    setTimeout(() => {
+      // Remove animation class and set position relative to island
+      book.classList.remove('book-animate');
+      // Get island position relative to scene
+      const islandRect = island.getBoundingClientRect();
+      const sceneRect = scene.getBoundingClientRect();
+      // Center book on island
+      const left = islandRect.left - sceneRect.left + islandRect.width/2 - bookSize/2;
+      const top = islandRect.top - sceneRect.top + islandRect.height/2 - bookSize/2;
+      book.style.left = left + 'px';
+      book.style.top = top + 'px';
+      book.style.opacity = '1';
+    }, 1300);
+
+    // Show popup after drop
+    setTimeout(() => {
+      const popup = document.createElement('div');
+      popup.className = 'book-popup';
+      popup.textContent = "click me for Epstein's little black book";
+      scene.appendChild(popup);
+      // Remove popup after click or after 8s
+      book.addEventListener('click', () => {
+  popup.remove();
+  // Create overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'pdf-overlay';
+
+  // PDF container
+  const container = document.createElement('div');
+  container.className = 'pdf-container';
+
+  // Close button
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'pdf-close-btn';
+  closeBtn.textContent = 'Close';
+  closeBtn.onclick = () => overlay.remove();
+  container.appendChild(closeBtn);
+
+  // Minimal PDF overlay: just close button and iframe
+  const viewerIframe = document.createElement('iframe');
+  viewerIframe.className = 'pdf-iframe';
+  viewerIframe.style.height = '80vh';
+  viewerIframe.style.width = '100%';
+  viewerIframe.src = 'https://ia600705.us.archive.org/21/items/epsteindocs/Jeffrey_Epstein39s_Little_Black_Book_unredacted.pdf';
+  container.appendChild(viewerIframe);
+
+  overlay.appendChild(container);
+  document.body.appendChild(overlay);
+      });
+      setTimeout(() => popup.remove(), 8000);
+    }, 1200);
+  }
+
+  // Detect plane's first appearance
+  window.addEventListener('DOMContentLoaded', () => {
+    const plane = document.getElementById('plane');
+    if (plane) {
+  // Wait until plane is 25% across the screen (25% of 16s = 4s)
+  setTimeout(dropBook, 4000);
+    }
+  });
   const scene = document.getElementById('scene');
   const audio = document.getElementById('fartAudio');
   const releaseAudio = document.getElementById('releaseAudio');
+  const muteHint = document.getElementById('muteHint');
+  let isMuted = false;
 
   // Play both audios on first click, then only fart.mp3 on subsequent clicks
   let firstClick = true;
@@ -335,6 +579,19 @@
       puff.addEventListener('animationend', () => {
         puff.remove();
       });
+    }
+  });
+
+  // Change hint to mute button when music starts
+  releaseAudio.addEventListener('play', () => {
+    if (muteHint) {
+      muteHint.textContent = isMuted ? 'Unmute' : 'Mute';
+      muteHint.style.cursor = 'pointer';
+      muteHint.onclick = () => {
+        isMuted = !isMuted;
+        releaseAudio.muted = isMuted;
+        muteHint.textContent = isMuted ? 'Unmute' : 'Mute';
+      };
     }
   });
 </script>
