@@ -214,7 +214,7 @@
   .palm {
     position: absolute;
     left: 50%;
-    bottom: 48%;
+    bottom: 80%;
     width: 210px;
     height: 330px;
     background: url('palm.png') center/contain no-repeat;
@@ -303,18 +303,16 @@
     100% { transform: translateX(260vw) translateY(0); }
   }
 
-  /* Static Drumpf banner on island */
+  /* Static sun image on island */
   .island-banner {
     position: absolute;
     top: 5%;
     left: 50%;
     transform: translateX(-50%);
-    font-weight: 700;
-    background: rgba(255,255,255,0.9);
-    padding: 10px 20px;
-    border-radius: 8px;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
-    z-index: 5;
+    width: 320px;
+    height: 320px;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,0.2));
+    z-index: 0;
   }
 
   /* Click hint */
@@ -362,7 +360,7 @@
   /* Adjust palm position */
   .palm {
     left: 50%;
-    bottom: 40%;
+    bottom: 70%;
     width: 150px;
     height: 240px;
     transform: translateX(-50%);
@@ -392,7 +390,7 @@
       <div class="palm" aria-hidden="true"></div>
     </div>
 
-    <div class="island-banner">Lock him up!</div>
+    <img src="sun.png" alt="Sun" class="island-banner" aria-hidden="true" />
 
   <div class="hint" id="muteHint">Click anywhere for sound</div>
   </div>
