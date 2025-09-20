@@ -87,7 +87,7 @@
   /* Remove old book-animate and bookDrop keyframes, replaced by JS animation */
   .book-popup {
     position: absolute;
-  left: 50%;
+  left: 60%;
   bottom: 8%;
   transform: translate(-50%, 0);
     background: #222;
@@ -425,9 +425,9 @@
     const startX = planeRect.left - sceneRect.left + planeRect.width/2 - 24;
     const startY = planeRect.top - sceneRect.top + planeRect.height/2 - 24;
 
-    // End X: center of island
+    // End X: closer to Eepsteen character (right side of island)
     const islandRect = island.getBoundingClientRect();
-    const endX = islandRect.left - sceneRect.left + islandRect.width/2 - 24;
+    const endX = islandRect.left - sceneRect.left + islandRect.width * 0.7 - 24;
     const endY = islandRect.top - sceneRect.top + islandRect.height/2 - 24;
 
     // Get character size for scaling
@@ -470,8 +470,8 @@
           // Get island position relative to scene
           const islandRect = island.getBoundingClientRect();
           const sceneRect = scene.getBoundingClientRect();
-          // Center book on island
-          const left = islandRect.left - sceneRect.left + islandRect.width/2 - bookSize/2;
+          // Position book closer to Eepsteen character on island
+          const left = islandRect.left - sceneRect.left + islandRect.width * 0.7 - bookSize/2;
           const top = islandRect.top - sceneRect.top + islandRect.height/2 - bookSize/2;
           book.style.left = left + 'px';
           book.style.top = top + 'px';
@@ -488,8 +488,8 @@
       // Get island position relative to scene
       const islandRect = island.getBoundingClientRect();
       const sceneRect = scene.getBoundingClientRect();
-      // Center book on island
-      const left = islandRect.left - sceneRect.left + islandRect.width/2 - bookSize/2;
+      // Position book closer to Eepsteen character on island
+      const left = islandRect.left - sceneRect.left + islandRect.width * 0.7 - bookSize/2;
       const top = islandRect.top - sceneRect.top + islandRect.height/2 - bookSize/2;
       book.style.left = left + 'px';
       book.style.top = top + 'px';
