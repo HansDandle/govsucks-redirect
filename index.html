@@ -213,12 +213,14 @@
   /* Palm tree */
   .palm {
     position: absolute;
-    left: 10%;
+    left: 50%;
     bottom: 48%;
-    width: 140px;
-    height: 220px;
+    width: 210px;
+    height: 330px;
     background: url('palm.png') center/contain no-repeat;
     filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25));
+    transform: translateX(-50%);
+    z-index: 1;
   }
 
   /* Characters as images */
@@ -228,6 +230,7 @@
     animation: dance 1s infinite ease-in-out;
     transform-origin: center bottom;
     user-select: none;
+    z-index: 2;
   }
   .char-left {
   left: 20%;
@@ -341,7 +344,7 @@
   .char-left {
     left: 25%;
     bottom: 20%;
-    max-width: 125px;
+    max-width: 115px;
     width: auto;
     height: auto;
   }
@@ -358,10 +361,11 @@
 
   /* Adjust palm position */
   .palm {
-    left: 5%;
+    left: 50%;
     bottom: 40%;
-    width: 100px;
-    height: 160px;
+    width: 150px;
+    height: 240px;
+    transform: translateX(-50%);
   }
 }
 
@@ -561,7 +565,7 @@
       const puffSize = charRect.width * 0.25;
       // Position: bottom right of character
       const left = charRect.left - sceneRect.left + charRect.width * 0.75;
-      const top = charRect.top - sceneRect.top + charRect.height * 0.75;
+      const top = charRect.top - sceneRect.top + charRect.height * 0.75 - 15; // moved up by 15px
 
       // Create puff element
       const puff = document.createElement('img');
